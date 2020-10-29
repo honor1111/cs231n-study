@@ -1,6 +1,6 @@
 import numpy as np
 from past.builtins import xrange
-
+from numba import jit, cuda
 
 class KNearestNeighbor(object):
   """ a kNN classifier with L2 distance """
@@ -47,7 +47,7 @@ class KNearestNeighbor(object):
       raise ValueError('Invalid value %d for num_loops' % num_loops)
 
     return self.predict_labels(dists, k=k)
-
+  
   def compute_distances_two_loops(self, X):
     """
     Compute the distance between each test point in X and each training point
@@ -83,7 +83,7 @@ class KNearestNeighbor(object):
         #                       END OF YOUR CODE                            #
         #####################################################################
     return dists
-
+  
   def compute_distances_one_loop(self, X):
     """
     Compute the distance between each test point in X and each training point
@@ -102,9 +102,9 @@ class KNearestNeighbor(object):
       #######################################################################
       pass
       
-      sub_list = X[i] - self.X_train[:]
+      sub_list = self.X_train - X[i]
       sub_list_square = sub_list ** 2
-      L2_distance[:] = np.sqrt(np.sum(sub_list_square))
+      L2_distance = np.sqrt(np.sum(sub_list_square, axis=1))
   
       dists[i, :] = L2_distance
       #######################################################################
@@ -135,6 +135,13 @@ class KNearestNeighbor(object):
     #       and two broadcast sums.                                         #
     #########################################################################
     pass
+
+    # square root of sum(p^2 -2pq + q^2)
+    p_square = np.reshape(np.sum(X**2, axis=1), [num_test,1])
+    q_square = np.sum(self.X_train**2, axis=1)
+    pq = np.matmul(X, self.X_train.T)
+
+    dists = np.sqrt(p_square - 2*pq + q_square)
 
     #########################################################################
     #                         END OF YOUR CODE                              #
