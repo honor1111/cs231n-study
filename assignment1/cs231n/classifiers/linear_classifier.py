@@ -10,6 +10,8 @@ class LinearClassifier(object):
 
   def __init__(self):
     self.W = None
+    self.lr = None
+    self.Reg = None
 
   def train(self, X, y, learning_rate=1e-3, reg=1e-5, num_iters=100,
             batch_size=200, verbose=False):
@@ -54,6 +56,8 @@ class LinearClassifier(object):
       # replacement is faster than sampling without replacement.              #
       #########################################################################
       pass
+      X_batch = X[np.random.choice(np.arange(num_train), batch_size), :]
+      y_batch = np.random.choice(y, batch_size)
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -68,6 +72,11 @@ class LinearClassifier(object):
       # Update the weights using the gradient and the learning rate.          #
       #########################################################################
       pass
+      self.W -= learning_rate * grad
+      self.lr = learning_rate
+      self.Reg = reg
+
+      
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -97,6 +106,10 @@ class LinearClassifier(object):
     # Implement this method. Store the predicted labels in y_pred.            #
     ###########################################################################
     pass
+    y_pred = np.matmul(X, self.W) # [N, C]
+    y_pred = np.argmax(y_pred[range(X.shape[0]), :], axis=1)
+    # y_pred = X.dot(self.W).argmax(axis=1)
+
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
@@ -118,6 +131,7 @@ class LinearClassifier(object):
     - gradient with respect to self.W; an array of the same shape as W
     """
     pass
+    
 
 
 class LinearSVM(LinearClassifier):

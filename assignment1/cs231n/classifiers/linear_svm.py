@@ -22,10 +22,11 @@ def svm_loss_naive(W, X, y, reg):
   """
   dW = np.zeros(W.shape) # initialize the gradient as zero
 
-  # compute the loss and the gradient
   num_classes = W.shape[1]
   num_train = X.shape[0]
   loss = 0.0
+
+  # compute the loss and the gradient
   for i in xrange(num_train):
     scores = X[i].dot(W)
     correct_class_score = scores[y[i]]
@@ -35,14 +36,17 @@ def svm_loss_naive(W, X, y, reg):
       margin = scores[j] - correct_class_score + 1 # note delta = 1
       if margin > 0:
         loss += margin
+        dW[:, j] += X[i] # dmargin/dj == d(scores[j] - correct_class_score + 1)/dj
+        dW[:, y[i]] -= X[i]
 
   # Right now the loss is a sum over all training examples, but we want it
   # to be an average instead so we divide by num_train.
   loss /= num_train
+  dW /= num_train # average
 
   # Add regularization to the loss.
   loss += reg * np.sum(W * W)
-
+  dW += reg * 2 * W # derivate of loss
   #############################################################################
   # TODO:                                                                     #
   # Compute the gradient of the loss function and store it dW.                #
@@ -52,9 +56,7 @@ def svm_loss_naive(W, X, y, reg):
   # code above to compute the gradient.                                       #
   #############################################################################
 
-
   return loss, dW
-
 
 def svm_loss_vectorized(W, X, y, reg):
   """
@@ -71,6 +73,19 @@ def svm_loss_vectorized(W, X, y, reg):
   # result in loss.                                                           #
   #############################################################################
   pass
+  delta = 1
+  num_train = X.shape[0]
+
+  scores = np.matmul(X, W) # NxC
+  correct_class_scores = scores[range(num_train), y].reshape(num_train, 1) # Nx1
+  
+  margin = np.maximum(0, scores - correct_class_scores + delta)
+  margin[range(num_train), y] = 0 # set correct class (j == y[i]) zero
+
+  loss += np.mean(np.sum(margin, axis=1))
+  loss += reg * np.sum(W * W)
+
+  
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
@@ -86,6 +101,14 @@ def svm_loss_vectorized(W, X, y, reg):
   # loss.                                                                     #
   #############################################################################
   pass
+
+  dWmargin = np.copy(margin)
+  dWmargin[margin>0] = 1
+  dWmargin[range(num_train), y] -= np.sum(dWmargin, axis=1)
+  dW = np.matmul(X.T, dWmargin) / num_train
+
+  dW += reg * 2 * W # derivate of loss
+
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
