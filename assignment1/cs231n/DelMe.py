@@ -6,4 +6,6 @@ d = np.array([[0],[1],[2],[3],[4]])
 
 argm = np.array([[1,2,3], [2,4,6]])
 
-print(np.max(argm[range(2), :], axis=1))
+# print(np.max(argm[range(2), :], axis=1))
+
+print("{:.4f}".format(np.pi))
