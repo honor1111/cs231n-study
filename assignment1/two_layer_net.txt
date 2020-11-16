@@ -1,0 +1,20 @@
+[best config] val_acc:0.299000, hs:100, lr:9.001000e-04, reg:7.300000e-01
+[best config] val_acc:0.383000, hs:50, lr:9.010000e-04, reg:1.000000e-01
+[best config] val_acc:0.561000, batch:500, lr:3.139177e-03, reg:4.786821e-03
+train_val : 0.508510, val_acc : 0.504000, hidden size : 250, lr : 8.884945e-04, reg : 2.492577e-03 [8/500] 
+train_val : 0.520122, val_acc : 0.502000, hidden size : 250, lr : 1.145029e-03, reg : 2.767919e-03 [18/500] 
+train_val : 0.487633, val_acc : 0.453000, hidden size : 250, lr : 2.628850e-03, reg : 8.019303e-03 [34/500] 
+train_val : 0.522673, val_acc : 0.491000, hidden size : 250, lr : 1.420481e-03, reg : 2.865300e-04 [35/500] 
+train_val : 0.100265, val_acc : 0.087000, hidden size : 250, lr : 4.948684e-03, reg : 1.690101e-03 [36/500] 
+train_val : 0.516224, val_acc : 0.496000, hidden size : 250, lr : 9.116680e-04, reg : 1.229390e-04 [37/500] 
+train_val : 0.511776, val_acc : 0.475000, hidden size : 250, lr : 1.998305e-03, reg : 3.616190e-03 [38/500] 
+train_val : 0.519796, val_acc : 0.489000, hidden size : 250, lr : 1.477780e-03, reg : 3.346859e-03 [39/500] 
+train_val : 0.465857, val_acc : 0.457000, hidden size : 250, lr : 2.867055e-03, reg : 6.988870e-03 [40/500] 
+train_val : 0.508490, val_acc : 0.488000, hidden size : 250, lr : 8.654215e-04, reg : 6.309598e-03 [41/500] 
+train_val : 0.524327, val_acc : 0.488000, hidden size : 250, lr : 1.028788e-03, reg : 8.039372e-03 [42/500] 
+train_val : 0.465143, val_acc : 0.422000, hidden size : 250, lr : 2.279367e-03, reg : 2.196060e-03 [43/500] 
+train_val : 0.597082, val_acc : 0.522000, hidden size : 250, lr : 1.377529e-03, reg : 7.184756e-03 [1/50]
+train_val : 0.597082, val_acc : 0.522000, hidden size : 250, lr : 1.377529e-03, reg : 7.184756e-03 [1/50] 
+train_val : 0.623592, val_acc : 0.548000, hidden size : 250, lr : 2.968580e-03, reg : 7.183248e-03 [0/50]
+train_val : 0.674143, val_acc : 0.555000, hidden size : 250, lr : 2.907383e-03, reg : 2.585405e-03 [16/50]
+ 

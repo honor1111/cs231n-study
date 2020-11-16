@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 import matplotlib.pyplot as plt
+import tensorflow as tf
 from past.builtins import xrange
 
 class TwoLayerNet(object):
@@ -77,6 +78,17 @@ class TwoLayerNet(object):
     # shape (N, C).                                                             #
     #############################################################################
     pass
+    
+    # Layer one
+    z1 = tf.matmul(X, W1).numpy() + b1
+    # Activation fnc : RELU
+    a1 = np.maximum(0, z1) 
+    # Layer two
+    z2 = tf.matmul(a1, W2).numpy() + b2
+    scores = z2
+
+    # later, softmax for scores
+
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -94,6 +106,16 @@ class TwoLayerNet(object):
     # classifier loss.                                                          #
     #############################################################################
     pass
+
+    # Calculate Softmax loss
+    scores -= np.max(scores, axis=1, keepdims=True) # solve numerical instability  
+    exp_scores = tf.math.exp(scores).numpy()
+
+    a2 = exp_scores/np.sum(exp_scores, axis=1, keepdims=True) # divide np.exp(f) by sum of each column. 
+    data_loss = - (np.sum(np.log(a2[np.arange(N), y]))) / N # mean of loss sum
+    reg_loss = reg * (np.sum(W1 * W1) + np.sum(W2*W2)) # reg
+
+    loss = data_loss + reg_loss
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -106,6 +128,30 @@ class TwoLayerNet(object):
     # grads['W1'] should store the gradient on W1, and be a matrix of same size #
     #############################################################################
     pass
+    #    W1 has shape (D, H)
+    #    W2 has shape (H, C)
+    dsoftmax = a2
+    dsoftmax[range(N), y] -= 1
+    dsoftmax /= N
+
+    # dhidden = np.matmul(dsoftmax, W2.T)
+    dhidden = tf.matmul(dsoftmax, W2.T).numpy()
+    dhidden[z1<=0] = 0 # because RELU
+
+    # grads['W2'] = np.matmul(a1.T, dsoftmax)
+    # grads['b2'] = np.sum(dsoftmax, axis=0)
+
+    # grads['W1'] = np.dot(X.T, dhidden)
+    # grads['b1'] = np.sum(dhidden, axis=0)
+    grads['W2'] = tf.matmul(a1.T, dsoftmax).numpy()
+    grads['b2'] = np.sum(dsoftmax, axis=0)
+
+    grads['W1'] = tf.matmul(X.T, dhidden).numpy()
+    grads['b1'] = np.sum(dhidden, axis=0)
+
+    grads['W2'] += 2 * reg * W2
+    grads['W1'] += 2 * reg * W1 
+
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
@@ -150,6 +196,10 @@ class TwoLayerNet(object):
       # them in X_batch and y_batch respectively.                             #
       #########################################################################
       pass
+      batch_slice = np.random.choice(np.arange(num_train), batch_size) 
+      X_batch = X[batch_slice]
+      y_batch = y[batch_slice]
+
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -165,12 +215,16 @@ class TwoLayerNet(object):
       # stored in the grads dictionary defined above.                         #
       #########################################################################
       pass
+      
+      for key in self.params:
+        self.params[key] -= learning_rate * grads[key] 
+
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
 
-      if verbose and it % 100 == 0:
-        print('iteration %d / %d: loss %f' % (it, num_iters, loss))
+      if verbose and it % 10 == 0:
+        print('iteration %d / %d: loss %f lr %e reg %e' % (it, num_iters, loss, learning_rate, reg))
 
       # Every epoch, check train and val accuracy and decay learning rate.
       if it % iterations_per_epoch == 0:
@@ -210,6 +264,8 @@ class TwoLayerNet(object):
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
     pass
+    y_pred = np.argmax(self.loss(X), axis=1)
+
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
